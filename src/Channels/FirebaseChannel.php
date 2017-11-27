@@ -45,7 +45,15 @@ class FirebaseChannel
     public function send($notifiable, Notification $notification)
     {
         $message = $notification->toFcm($notifiable);
-        $message->setTo($notifiable->routeNotificationForFcm());
+        if(empty($message)) {
+            return;
+        }
+        
+        $to = $notifiable->routeNotificationForFcm();
+        if(empty($to)) {
+            return;
+        }
+        $message->setTo($to);
         
         $apiKey = '';
         if(!empty($message->getApiKey())) {
