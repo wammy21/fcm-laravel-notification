@@ -66,7 +66,8 @@ class FirebaseMessage
     }
     
     /**
-     * @param null $device_token
+     * Device token to send the message to, or pass an array of tokens to send to multiple device tokens.
+     * @param mixed $device_token
      * @return $this
      */
     public function setTo($device_token = null)
@@ -101,11 +102,19 @@ class FirebaseMessage
      */
     public function serialize()
     {
-        $filtered = array_filter([
-            'to' => $this->to,
-            'notification' => $this->notification,
-            'data' => $this->data,
-        ]);
+        if (!is_array($this->to)) {
+            $filtered = array_filter([
+                'to' => $this->to,
+                'notification' => $this->notification,
+                'data' => $this->data,
+            ]);
+        } else {
+            $filtered = array_filter([
+                'registration_ids' => $this->to,
+                'notification' => $this->notification,
+                'data' => $this->data,
+            ]);
+        }
 
         return json_encode($filtered);
     }
