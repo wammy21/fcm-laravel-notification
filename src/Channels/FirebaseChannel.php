@@ -48,20 +48,17 @@ class FirebaseChannel
         if(empty($message)) {
             return;
         }
-        
-        $to = $notifiable->routeNotificationForFcm();
+
+        $to = $notifiable->routeNotificationFor('fcm',$notifiable);
         if(empty($to)) {
             return;
         }
         $message->setTo($to);
         
-        $apiKey = '';
+        $apiKey = $this->getApiKey();
         if(!empty($message->getApiKey())) {
             //Use the API key provided by the message.
             $apiKey = $message->getApiKey();
-        } else {
-            //Use the default api key
-            $apiKey = $this->getApiKey();
         }
 
         $this->client->post(FirebaseChannel::API_URI, [
